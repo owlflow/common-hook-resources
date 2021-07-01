@@ -28,7 +28,7 @@ provider:
   logRetentionInDays: 14
   endpointType: regional
   deploymentBucket:
-    name: ${self:custom.deploymentBucket.${self:provider.stage}}-${self:provider.region}
+    name: ${self:custom.deploymentBucket}-${self:provider.region}
   environment:
     SERVERLESS_REGION: ${self:custom.config.REGION}
 
