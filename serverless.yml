@@ -4,7 +4,9 @@ frameworkVersion: ">=2.0.0 <3.0.0"
 
 custom:
   defaultStage: dev
+  defaultRegion: us-east-1
   currentStage: ${opt:stage, self:custom.defaultStage}
+  currentRegion: ${opt:region, self:custom.defaultRegion}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   config: ${file(./config.${self:custom.currentStage}.json)}
   deploymentBucket: ${self:custom.config.DEPLOYMENT_BUCKET}
@@ -13,7 +15,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: ${self:custom.currentStage}
-  region: ${self:custom.config.REGION}
+  region: ${self:custom.currentRegion}
   timeout: 30
   logRetentionInDays: 14
   endpointType: regional
@@ -21,6 +23,14 @@ provider:
     name: ${self:custom.deploymentBucket}-${self:provider.region}
   environment:
     SERVERLESS_REGION: ${self:custom.config.REGION}
+
+layers:
+  commonLibs:
+    path: layer/commonLibs
+    name: ${self:custom.resourcesPrefix}-commonLibs
+    compatibleRuntimes:
+      - nodejs12.x
+    retain: true
 
 package:
   excludeDevDependencies: true
@@ -49,3 +59,7 @@ functions:
 resources:
   # API Gateway
   - ${file(resources/api-gateway.yml)}
+
+  # Event Bus
+  - ${file(resources/event-bus.yml)}
+

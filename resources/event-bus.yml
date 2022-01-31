@@ -1,0 +1,5 @@
+Resources:
+  FlowEventBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: ${self:custom.resourcesPrefix}-bridge
